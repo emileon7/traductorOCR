@@ -2,19 +2,16 @@ import easyocr
 
 reader = easyocr.Reader(['es', 'en'], gpu=False)
 
-def extract_text(image):
+
+def extract_text_image(image):
     results = reader.readtext(image, detail=1, paragraph=False)
 
     if not results:
         return ""
 
-    # Descartar detecciones con confianza muy baja
     results = [(bbox, text, conf) for bbox, text, conf in results if conf > 0.25]
-
-    # Ordenar por posición Y (arriba→abajo), luego X (izquierda→derecha)
     results.sort(key=lambda r: (r[0][0][1], r[0][0][0]))
 
-    # Agrupar en líneas por proximidad vertical
     lines = []
     current_line = []
     last_y = None

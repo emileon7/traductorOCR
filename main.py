@@ -1,24 +1,10 @@
-from modules.preprocess import process_image
-from modules.ocr import extract_text
-from modules.parser import parse_invoice
-from modules.aggregator import sum_selection
+import pdfplumber
 
-path = "assets/factura_gema.png"
+with pdfplumber.open("data/EmilyLeonVuelo.pdf") as pdf:
+    page = pdf.pages[0]
 
-image = process_image(path)
-text = extract_text(image)
+    text = page.extract_text()
 
-print("=== TEXTO OCR ===")
-print(text)
+    table = page.extract_table()
 
-data = parse_invoice(text)
-
-print("\n=== DATOS EXTRAÍDOS ===")
-print(data)
-
-facturas = [data]
-
-#total = calcular_total(facturas)
-
-print("\n=== TOTAL GENERAL ===")
-#print(total)
+    print(text)

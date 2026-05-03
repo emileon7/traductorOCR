@@ -11,7 +11,7 @@ def _parse_money(value: str) -> float:
         value = value.replace(',', '.')
     elif dot_count > 1 and comma_count == 0:
         # "1.234.567" → puntos son miles, sin decimal
-        value = value.replace('.', '')
+        value = value.replace(',', '')
     elif comma_count > 1 and dot_count == 0:
         # "1,234,567" → comas son miles
         value = value.replace(',', '')
@@ -41,13 +41,15 @@ def parse_invoice(text: str) -> dict:
         data['numero_factura'] = m.group(1).strip()
 
     # Proveedor / Emisor
-    m = re.search(r'(?:Proveedor|Emisor|Empresa|De)\s*[:\-]?\s*(.+)', t, re.IGNORECASE)
+    m = re.search(r'(?:Proveedor|Emisor|Empresa|De|Sucursal|Razon Social)\s*[:\-]?\s*(.+)', t, re.IGNORECASE)
     if m:
         data['proveedor'] = m.group(1).strip()
 
-    # Fecha
+    # Fecha — formato normal dd/mm/aaaa o ISO aaaa-mm-ddThh:mm:ss (CFDIs)
     m = re.search(
-        r'(?:Fecha|Date)\s*[:\-]?\s*(\d{1,2}[\/\-\.]\d{1,2}[\/\-\.]\d{2,4})',
+        r'(?:Fecha[^:\n]*|Date)\s*[:\-]?\s*'
+        r'(\d{4}-\d{2}-\d{2}(?:T\d{2}:\d{2}:\d{2})?'   # ISO: 2026-04-30T15:20:28
+        r'|\d{1,2}[\/\-\.]\d{1,2}[\/\-\.]\d{2,4})',      # normal: 30/04/2026
         t, re.IGNORECASE
     )
     if m:
@@ -58,26 +60,40 @@ def parse_invoice(text: str) -> dict:
     if m:
         data['rfc'] = m.group(1).strip()
 
-    # Total — buscar etiqueta explícita primero
-    _money = r'\$?\s*([\d]{1,3}(?:[,\.]\d{3})*[,\.]\d{2}|\d+[,\.]\d{2})'
-    m = re.search(
-        r'(?:Total\s*(?:a\s*pagar)?|Importe\s*Total|Monto\s*Total|Gran\s*Total|TOTAL)\s*[:\-]?\s*' + _money,
-        t, re.IGNORECASE
+    # Detectar el total línea por línea.
+    # Patrón de dinero: captura números con separadores de miles y decimales.
+    # Ejemplos válidos: 1,180.00 | 1.180,00 | 180.00 | 1180.00
+    _money_re = re.compile(
+        r'\$?\s*'
+        r'(\d{1,3}(?:[,\.]\d{3})+[,\.]\d{2}'   # con miles: 1,180.00 o 1.180,00
+        r'|\d+[,\.]\d{2})'                       # sin miles:  180.00 o 180,00
     )
-    if m:
-        try:
-            data['total'] = _parse_money(m.group(1))
-        except ValueError:
-            data['total'] = None
-    else:
-        # Fallback: tomar el mayor monto numérico del documento
-        amounts = re.findall(r'\$?\s*([\d]{1,3}(?:[,\.]\d{3})+[,\.]\d{2}|\d{4,}[,\.]\d{2})', t)
-        parsed = []
-        for a in amounts:
+    # \bTotal\b respeta bordes de palabra: NO casa con "Subtotal"
+    _total_re = re.compile(r'(?<![A-Za-z])Total(?![A-Za-z])', re.IGNORECASE)
+
+    data['total'] = None
+    data['_debug_total_line'] = None
+
+    for line in t.split('\n'):
+        line = line.strip()
+        if not line:
+            continue
+        # Saltar líneas que son claramente subtotales o descuentos
+        if re.search(r'sub\s*total|descuento|iva|propina|cargo', line, re.IGNORECASE):
+            if not _total_re.search(line):  # "IVA Total" sí tiene Total → no saltar
+                continue
+        if not _total_re.search(line):
+            continue
+        # Sacar TODOS los montos de la línea y tomar el último (el total suele ir a la derecha)
+        amounts = _money_re.findall(line)
+        for raw in reversed(amounts):
             try:
-                parsed.append(_parse_money(a))
+                data['total'] = _parse_money(raw)
+                data['_debug_total_line'] = line
+                break
             except ValueError:
-                pass
-        data['total'] = max(parsed) if parsed else None
+                continue
+        if data['total'] is not None:
+            break
 
     return data

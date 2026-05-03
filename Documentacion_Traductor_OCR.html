@@ -1,0 +1,609 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Documentación — Traductor-OCR</title>
+<style>
+  @page { size: Letter; margin: 2.54cm 2.54cm 2.54cm 2.54cm; }
+  body {
+    font-family: "Calibri", "Arial", sans-serif;
+    font-size: 11pt;
+    color: #111;
+    line-height: 1.5;
+    max-width: 17cm;
+    margin: 1cm auto;
+    background: #fff;
+  }
+  h1, h2, h3, h4 {
+    font-family: "Calibri", "Arial", sans-serif;
+    color: #1F3864;
+    margin-top: 1.4em;
+    margin-bottom: 0.4em;
+    page-break-after: avoid;
+  }
+  h1 { font-size: 26pt; text-align: center; color: #1F3864; }
+  h2 { font-size: 16pt; border-bottom: 1.5pt solid #1F3864; padding-bottom: 4pt; }
+  h3 { font-size: 13pt; color: #2E74B5; }
+  h4 { font-size: 11.5pt; color: #2E74B5; font-style: italic; }
+  p { text-align: justify; margin: 0 0 0.6em 0; }
+  code, pre {
+    font-family: "Consolas", "Courier New", monospace;
+    font-size: 10pt;
+  }
+  pre {
+    background: #F2F2F2;
+    border-left: 3pt solid #2E74B5;
+    padding: 8pt 12pt;
+    overflow-x: auto;
+    page-break-inside: avoid;
+  }
+  code { background: #F2F2F2; padding: 1pt 4pt; border-radius: 2pt; }
+  table {
+    border-collapse: collapse;
+    width: 100%;
+    margin: 0.6em 0;
+    font-size: 10.5pt;
+    page-break-inside: avoid;
+  }
+  th, td {
+    border: 0.75pt solid #BFBFBF;
+    padding: 5pt 8pt;
+    text-align: left;
+    vertical-align: top;
+  }
+  th { background: #DEEBF7; color: #1F3864; }
+  tr:nth-child(even) td { background: #F8F8F8; }
+  .cover {
+    text-align: center;
+    padding-top: 4cm;
+    page-break-after: always;
+  }
+  .cover .institucion {
+    font-size: 14pt;
+    color: #555;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+  .cover .materia {
+    font-size: 12pt;
+    color: #777;
+    margin-top: 0.4em;
+  }
+  .cover h1 {
+    font-size: 32pt;
+    margin-top: 4cm;
+    color: #1F3864;
+  }
+  .cover .subtitulo {
+    font-size: 14pt;
+    color: #2E74B5;
+    margin-top: 0.6em;
+    font-style: italic;
+  }
+  .cover .meta {
+    margin-top: 4cm;
+    font-size: 12pt;
+    color: #444;
+    line-height: 1.8;
+  }
+  .toc {
+    page-break-after: always;
+  }
+  .toc ol { padding-left: 1.4em; }
+  .toc li { margin: 4pt 0; }
+  .pipeline-step {
+    background: #F8F8F8;
+    border-left: 3pt solid #2E74B5;
+    padding: 10pt 14pt;
+    margin: 8pt 0;
+    page-break-inside: avoid;
+  }
+  .pipeline-step strong { color: #1F3864; }
+  .nota {
+    background: #FFF4CE;
+    border-left: 3pt solid #B58B00;
+    padding: 8pt 12pt;
+    margin: 8pt 0;
+    font-size: 10.5pt;
+  }
+  .placeholder {
+    border: 1pt dashed #999;
+    background: #FAFAFA;
+    text-align: center;
+    color: #777;
+    padding: 1.2cm 0;
+    margin: 0.5em 0;
+    font-style: italic;
+  }
+  .pagebreak { page-break-before: always; }
+  ul, ol { margin: 0.4em 0 0.6em 1.4em; }
+  li { margin: 2pt 0; }
+</style>
+</head>
+<body>
+
+<!-- ════════════════════════════════ PORTADA ════════════════════════════════ -->
+<section class="cover">
+  <div class="institucion">Universidad de Montemorelos</div>
+  <div class="institucion">Facultad de Ingeniería y Tecnología (FITEC)</div>
+  <div class="materia">Octavo semestre — Traductores y Compiladores</div>
+
+  <h1>Traductor-OCR</h1>
+  <div class="subtitulo">Sistema de extracción y traducción estructurada de facturas mediante OCR</div>
+
+  <div class="meta">
+    <strong>Documentación de uso y funcionamiento</strong><br>
+    Autor: Emily León<br>
+    Correo: 1220122@alumno.um.edu.mx<br>
+    Fecha: Mayo de 2026
+  </div>
+</section>
+
+<!-- ════════════════════════════════ ÍNDICE ════════════════════════════════ -->
+<section class="toc">
+  <h2>Tabla de contenidos</h2>
+  <ol>
+    <li>Introducción</li>
+    <li>Descripción general del sistema</li>
+    <li>Arquitectura y flujo de datos</li>
+    <li>Manual de uso
+      <ol>
+        <li>Requisitos previos</li>
+        <li>Instalación</li>
+        <li>Ejecución</li>
+        <li>Operación de la interfaz</li>
+      </ol>
+    </li>
+    <li>Documentación técnica por módulo
+      <ol>
+        <li>interface/app.py — Aplicación principal</li>
+        <li>modules/preprocess.py — Preprocesamiento de imagen</li>
+        <li>modules/reader.py — Motor OCR</li>
+        <li>modules/extractor_pdf.py — Extracción de PDF</li>
+        <li>modules/corrector.py — Corrector textual</li>
+        <li>modules/parser.py — Analizador léxico de facturas</li>
+        <li>modules/aggregator.py — Agregador de totales</li>
+        <li>modules/storage.py — Persistencia JSON</li>
+      </ol>
+    </li>
+    <li>Caso de ejemplo</li>
+    <li>Conclusiones</li>
+    <li>Referencias</li>
+  </ol>
+</section>
+
+<!-- ════════════════════════════════ 1. INTRODUCCIÓN ════════════════════════════════ -->
+<h2>1. Introducción</h2>
+
+<p>El presente documento describe el diseño, funcionamiento y uso del proyecto <strong>Traductor-OCR</strong>, una aplicación desarrollada como parte del curso de Traductores y Compiladores. El sistema toma como entrada imágenes o documentos PDF de facturas reales y produce, como salida, una representación estructurada (JSON) con los campos relevantes del comprobante: número de factura, proveedor, fecha, RFC y total.</p>
+
+<p>Aunque el reconocimiento óptico de caracteres (OCR) suele asociarse con tareas de visión por computadora, el problema que aborda este proyecto es esencialmente <em>traductológico</em>: tomar un texto fuente —en este caso, un texto deformado por errores de OCR— y producir un texto destino que cumpla con una gramática bien definida (la estructura JSON). En ese sentido, el proyecto aplica las etapas clásicas de un traductor: análisis léxico (regex sobre el texto reconocido), análisis sintáctico (validación de patrones), y generación del código objetivo (serialización a JSON).</p>
+
+<p>La aplicación expone una interfaz web construida con Streamlit que permite cargar facturas, revisarlas manualmente, almacenarlas y realizar agregaciones de totales sobre el conjunto de documentos guardados.</p>
+
+<!-- ════════════════════════════════ 2. DESCRIPCIÓN GENERAL ════════════════════════════════ -->
+<h2>2. Descripción general del sistema</h2>
+
+<p>El Traductor-OCR está implementado en Python 3.13 y se apoya en las siguientes tecnologías principales:</p>
+
+<table>
+  <thead>
+    <tr><th>Componente</th><th>Tecnología</th><th>Función</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>Interfaz</td><td>Streamlit</td><td>UI web para carga, revisión, edición y agregación.</td></tr>
+    <tr><td>Preprocesamiento</td><td>OpenCV, NumPy</td><td>Mejora de contraste, eliminación de ruido y corrección de inclinación.</td></tr>
+    <tr><td>OCR</td><td>EasyOCR (es + en)</td><td>Reconocimiento de caracteres sobre imágenes.</td></tr>
+    <tr><td>Extracción PDF</td><td>pdfplumber</td><td>Extracción directa de texto y tablas de PDFs nativos.</td></tr>
+    <tr><td>Análisis</td><td>Expresiones regulares (re)</td><td>Identificación de campos estructurados (folio, RFC, total, etc.).</td></tr>
+    <tr><td>Persistencia</td><td>JSON local</td><td>Almacenamiento por archivo en <code>data/process/</code>.</td></tr>
+  </tbody>
+</table>
+
+<p>El sistema acepta archivos en los formatos PNG, JPG, JPEG, BMP, TIFF y PDF. Los formatos de imagen se enrutan al pipeline de preprocesamiento + OCR, mientras que los PDFs se enrutan a un extractor que aprovecha el texto embebido del documento (cuando éste es nativo y no escaneado).</p>
+
+<!-- ════════════════════════════════ 3. ARQUITECTURA ════════════════════════════════ -->
+<h2>3. Arquitectura y flujo de datos</h2>
+
+<h3>3.1. Estructura de carpetas</h3>
+
+<pre>
+Traductor-OCR/
+├── main.py                    # Script de prueba inicial (pdfplumber)
+├── config.py                  # Configuración (vacío; EasyOCR no requiere config externa)
+├── assets/
+│   └── factura_gema.png       # Imagen de prueba
+├── data/
+│   └── process/               # Facturas procesadas (JSON, una por archivo)
+├── interface/
+│   ├── app.py                 # Aplicación Streamlit principal (3 pestañas)
+│   └── views/
+│       ├── upload.py          # Vista de carga (versión inicial)
+│       └── totals.py          # Vista de totales (versión inicial)
+└── modules/
+    ├── preprocess.py          # Preprocesamiento OpenCV
+    ├── reader.py              # OCR con EasyOCR
+    ├── extractor_pdf.py       # Extracción con pdfplumber
+    ├── corrector.py           # Corrección de errores OCR
+    ├── parser.py              # Análisis léxico de campos
+    ├── aggregator.py          # Suma de totales
+    └── storage.py             # CRUD de archivos JSON
+</pre>
+
+<h3>3.2. Flujo de procesamiento</h3>
+
+<p>El recorrido de un archivo desde su carga hasta su almacenamiento estructurado sigue las siguientes etapas, según el tipo de entrada:</p>
+
+<div class="pipeline-step"><strong>Paso 1 — Recepción.</strong> El usuario arrastra uno o varios archivos a la pestaña «Subir y revisar». Streamlit los sube a memoria temporal.</div>
+
+<div class="pipeline-step"><strong>Paso 2a — Ruta de imagen.</strong> Si el archivo es una imagen, se guarda como temporal en disco, se ejecuta <code>preprocess.process_image()</code> (CLAHE + denoising + deskew) y luego <code>reader.extract_text_image()</code> aplica EasyOCR para obtener texto crudo.</div>
+
+<div class="pipeline-step"><strong>Paso 2b — Ruta de PDF.</strong> Si el archivo es PDF, se llama directamente a <code>extractor_pdf.extract_invoice_pdf()</code>, que usa pdfplumber para extraer texto y tablas de cada página.</div>
+
+<div class="pipeline-step"><strong>Paso 3 — Corrección.</strong> El texto crudo pasa por <code>corrector.correct_text()</code>, que normaliza espacios y sustituye caracteres comúnmente confundidos por OCR (O→0, l→1, S→5, etc.) dentro de patrones numéricos monetarios.</div>
+
+<div class="pipeline-step"><strong>Paso 4 — Análisis léxico.</strong> <code>parser.parse_invoice()</code> aplica un conjunto de expresiones regulares para localizar los campos: número de factura, proveedor, fecha, RFC y total. Para el total, se usa una heurística línea-por-línea que descarta subtotales, IVA, descuentos y propinas.</div>
+
+<div class="pipeline-step"><strong>Paso 5 — Revisión humana.</strong> La interfaz muestra los datos extraídos en una tarjeta. El usuario puede corregir el total manualmente si no se detectó, ver el OCR completo, y decidir guardar o descartar.</div>
+
+<div class="pipeline-step"><strong>Paso 6 — Persistencia.</strong> <code>storage.save_invoices()</code> serializa el diccionario a JSON dentro de <code>data/process/&lt;nombre&gt;.json</code>.</div>
+
+<div class="pipeline-step"><strong>Paso 7 — Agregación.</strong> Las pestañas «Facturas guardadas» y «Calculadora» leen los JSON con <code>storage.load_invoices()</code> y aplican <code>aggregator.sum_all()</code> o <code>sum_selection()</code> para computar totales globales o parciales.</div>
+
+<h3>3.3. Diagrama lógico</h3>
+
+<pre>
+   ┌──────────────┐
+   │   Archivo    │  (PNG, JPG, PDF…)
+   └──────┬───────┘
+          │
+   ┌──────┴──────────────────────────────────┐
+   │   ¿Imagen o PDF?                        │
+   └──────┬───────────────────┬──────────────┘
+   imagen │                   │ pdf
+          ▼                   ▼
+  ┌──────────────┐    ┌──────────────────┐
+  │ preprocess   │    │ extractor_pdf    │
+  │ (OpenCV)     │    │ (pdfplumber)     │
+  └──────┬───────┘    └────────┬─────────┘
+         ▼                     │
+  ┌──────────────┐             │
+  │ reader       │             │
+  │ (EasyOCR)    │             │
+  └──────┬───────┘             │
+         └──────────┬──────────┘
+                    ▼
+            ┌──────────────┐
+            │  corrector   │  (limpieza + OCR-fix numérico)
+            └──────┬───────┘
+                   ▼
+            ┌──────────────┐
+            │   parser     │  (regex → dict)
+            └──────┬───────┘
+                   ▼
+            ┌──────────────┐
+            │ Revisión UI  │  (Streamlit, edición manual)
+            └──────┬───────┘
+                   ▼
+            ┌──────────────┐
+            │  storage     │  (JSON por factura)
+            └──────┬───────┘
+                   ▼
+            ┌──────────────┐
+            │ aggregator   │  (sum_all / sum_selection)
+            └──────────────┘
+</pre>
+
+<!-- ════════════════════════════════ 4. MANUAL DE USO ════════════════════════════════ -->
+<h2 class="pagebreak">4. Manual de uso</h2>
+
+<h3>4.1. Requisitos previos</h3>
+
+<ul>
+  <li>Python 3.10 o superior (probado con 3.13).</li>
+  <li>Sistema operativo: Windows, macOS o Linux.</li>
+  <li>Conexión a Internet la primera vez que se ejecuta EasyOCR (para descargar los modelos de los idiomas <em>es</em> y <em>en</em>).</li>
+  <li>Aproximadamente 500 MB de espacio en disco para los modelos OCR.</li>
+</ul>
+
+<h3>4.2. Instalación</h3>
+
+<p>Desde una terminal, dentro de la carpeta del proyecto, se recomienda crear un entorno virtual y luego instalar las dependencias:</p>
+
+<pre>
+# 1. Crear entorno virtual
+python -m venv venv
+
+# 2. Activar
+# En Windows:
+venv\Scripts\activate
+# En macOS/Linux:
+source venv/bin/activate
+
+# 3. Instalar dependencias
+pip install streamlit easyocr opencv-python numpy pdfplumber
+</pre>
+
+<div class="nota">
+  <strong>Nota:</strong> No existe un <code>requirements.txt</code> en el proyecto. Se recomienda generarlo después de la primera instalación con <code>pip freeze &gt; requirements.txt</code> para facilitar la reproducibilidad de la entrega.
+</div>
+
+<h3>4.3. Ejecución</h3>
+
+<p>La aplicación se lanza con Streamlit apuntando al archivo principal:</p>
+
+<pre>
+streamlit run interface/app.py
+</pre>
+
+<p>Streamlit abrirá automáticamente el navegador en <code>http://localhost:8501</code>. La aplicación queda en ejecución hasta que se cierre la terminal o se presione <code>Ctrl+C</code>.</p>
+
+<h3>4.4. Operación de la interfaz</h3>
+
+<p>La aplicación se compone de tres pestañas, cada una con un propósito específico:</p>
+
+<h4>Pestaña 1 — «Subir y revisar»</h4>
+
+<p>Es el punto de entrada del flujo. Permite arrastrar o seleccionar uno o varios archivos en formatos PNG, JPG, JPEG, BMP, TIFF o PDF. Para cada archivo procesado se genera una tarjeta de revisión con:</p>
+
+<ul>
+  <li>El nombre del archivo y el total detectado en grande (en color dorado).</li>
+  <li>Una insignia que indica si el total fue detectado automáticamente o si requiere intervención manual.</li>
+  <li>Los campos extraídos: proveedor, fecha, número de factura, RFC y folio.</li>
+  <li>Un campo de entrada manual para el total cuando el parser no logró detectarlo.</li>
+  <li>Un panel desplegable («Ver texto OCR completo») que muestra el resultado bruto del OCR junto con la línea exacta usada para identificar el total (útil para depurar la heurística).</li>
+  <li>Botones <em>Guardar</em> y <em>Descartar</em>, así como un botón <em>Guardar todas las pendientes</em> al final de la lista.</li>
+</ul>
+
+<h4>Pestaña 2 — «Facturas guardadas»</h4>
+
+<p>Lista todas las facturas almacenadas como archivos JSON. Muestra tres métricas en la parte superior: número de documentos, suma total y proporción de facturas con total detectado. Por cada fila se ofrecen acciones de eliminación y edición. Al editar, los campos modificables son proveedor, número de factura, fecha y total. Existe además una zona de peligro para eliminar el conjunto completo.</p>
+
+<h4>Pestaña 3 — «Calculadora»</h4>
+
+<p>Permite seleccionar manualmente un subconjunto de facturas guardadas y ver simultáneamente el subtotal de la selección y el total global. Bajo la selección se despliega el detalle de cada factura incluida.</p>
+
+<div class="placeholder">
+  [ Espacio reservado para captura de pantalla de la interfaz ]<br>
+  Sugerido: arrastra aquí una captura de la pestaña «Subir y revisar» con una factura cargada.
+</div>
+
+<!-- ════════════════════════════════ 5. DOCUMENTACIÓN TÉCNICA ════════════════════════════════ -->
+<h2 class="pagebreak">5. Documentación técnica por módulo</h2>
+
+<!-- ───────── 5.1 app.py ───────── -->
+<h3>5.1. <code>interface/app.py</code> — Aplicación principal</h3>
+
+<p>Es el orquestador completo de la aplicación. Concentra la configuración de página, los estilos CSS personalizados (paleta oscura con acentos dorados), el manejo de estado de sesión y las tres pestañas funcionales.</p>
+
+<p><strong>Responsabilidades principales:</strong></p>
+<ul>
+  <li>Inserta dependencias del proyecto al <code>sys.path</code> para permitir la importación de los módulos hermanos.</li>
+  <li>Configura la página (<code>st.set_page_config</code>) con título <em>Facturas OCR</em>, ícono de recibo y layout amplio.</li>
+  <li>Inyecta una hoja de estilos extensa que personaliza tipografías (IBM Plex Sans/Mono), colores (fondo #0F0F0F, acento #C8B560), tarjetas, tabs, botones, expanders y métricas.</li>
+  <li>Inicializa el estado de sesión con dos estructuras: <code>st.session_state.pendientes</code> (lista de facturas en revisión) y <code>st.session_state.procesados</code> (set de nombres ya procesados, para evitar reprocesamiento).</li>
+  <li>Despacha la lógica de las tres pestañas declaradas con <code>st.tabs([...])</code>.</li>
+</ul>
+
+<p><strong>Lógica de la pestaña «Subir y revisar»:</strong></p>
+<p>El uploader acepta múltiples archivos. Para cada archivo nuevo, se decide la ruta:</p>
+
+<pre>
+if suffix == ".pdf":
+    text = extract_invoice_pdf(file)
+else:
+    tmp = tempfile.NamedTemporaryFile(...)
+    tmp.write(file.read())
+    img = process_image(tmp.name)
+    text = extract_text_image(img)
+
+corrected = correct_text(text)
+data = parse_invoice(corrected)
+</pre>
+
+<p>El resultado se almacena en <code>st.session_state.pendientes</code>, lo que permite revisar varios documentos a la vez sin perder el estado al re-renderizar.</p>
+
+<p><strong>Lógica de la pestaña «Facturas guardadas»:</strong></p>
+<p>Implementa un CRUD completo: lectura con <code>load_invoices()</code>, eliminación individual con <code>delete_invoice(idx)</code>, edición con <code>get_invoice(idx)</code> + <code>update_invoice(idx, ...)</code> y eliminación masiva en una zona de peligro plegable.</p>
+
+<p><strong>Lógica de la pestaña «Calculadora»:</strong></p>
+<p>Reusa <code>aggregator.sum_all()</code> y <code>aggregator.sum_selection()</code> para calcular totales globales y parciales. La selección usa <code>st.multiselect</code> con un <em>format function</em> que muestra «<em>número · proveedor — $monto</em>».</p>
+
+<!-- ───────── 5.2 preprocess.py ───────── -->
+<h3>5.2. <code>modules/preprocess.py</code> — Preprocesamiento de imagen</h3>
+
+<p>Encapsula todo el preprocesado previo al OCR. La función pública es <code>process_image(path) -&gt; np.ndarray</code>. El módulo distingue entre imágenes a color y en escala de grises, y aplica pipelines distintos.</p>
+
+<table>
+  <thead><tr><th>Función</th><th>Propósito</th></tr></thead>
+  <tbody>
+    <tr><td><code>_is_colorful(img)</code></td><td>Decide si la imagen tiene color significativo evaluando la saturación media en HSV (umbral 25).</td></tr>
+    <tr><td><code>_enhance_bw(img)</code></td><td>Para imágenes B/N: convierte a gris, aplica <em>fastNlMeansDenoising</em> y luego CLAHE (ecualización adaptativa) con <em>clipLimit</em>=2.0.</td></tr>
+    <tr><td><code>_enhance_color(img)</code></td><td>Para imágenes a color: reescala a un mínimo de 1000 px en su lado mayor, aplica <em>bilateralFilter</em> (preserva bordes), convierte a gris y CLAHE.</td></tr>
+    <tr><td><code>_deskew(img)</code></td><td>Corrige inclinaciones menores a ~10°. Usa <code>cv2.minAreaRect</code> sobre los píxeles oscuros y rota la imagen con <em>warpAffine</em>. Salta correcciones &lt;0.5° por economía.</td></tr>
+    <tr><td><code>process_image(path)</code></td><td>Punto de entrada. Lee el archivo, lo redimensiona si excede 3000 px, elige el pipeline según el color, y aplica deskew al final.</td></tr>
+  </tbody>
+</table>
+
+<p>El módulo está pensado para ser robusto frente a fotografías reales de facturas (que suelen estar inclinadas, mal iluminadas o tener contraste irregular).</p>
+
+<!-- ───────── 5.3 reader.py ───────── -->
+<h3>5.3. <code>modules/reader.py</code> — Motor OCR</h3>
+
+<p>Wrapper sobre EasyOCR que entrega texto reconocido reorganizado por líneas según la posición vertical de cada caja delimitadora.</p>
+
+<p><strong>Inicialización:</strong></p>
+<pre>
+reader = easyocr.Reader(['es', 'en'], gpu=False)
+</pre>
+
+<p>El lector se instancia a nivel de módulo (singleton implícito), por lo que los modelos se cargan en RAM una sola vez y persisten durante toda la sesión.</p>
+
+<p><strong>Función <code>extract_text_image(image)</code>:</strong></p>
+<ol>
+  <li>Llama a <code>reader.readtext(image, detail=1, paragraph=False)</code>, que devuelve tuplas <em>(bbox, texto, confianza)</em>.</li>
+  <li>Filtra detecciones con confianza menor a 0.25 (descarta ruido).</li>
+  <li>Ordena las cajas por su coordenada <em>y</em> superior y, en caso de empate, por <em>x</em>.</li>
+  <li>Agrupa cajas en líneas usando un umbral adaptativo basado en la altura de cada caja (<em>max(height·0.6, 12 px)</em>): si la siguiente caja está dentro del umbral vertical, pertenece a la misma línea; si no, comienza una nueva.</li>
+  <li>Dentro de cada línea, ordena las cajas por <em>x</em> y concatena los textos con un espacio.</li>
+  <li>Devuelve todas las líneas unidas con saltos de línea.</li>
+</ol>
+
+<p>Esta agrupación geométrica es esencial porque EasyOCR devuelve detecciones individuales sin orden de lectura natural; sin esta etapa, los campos de la factura aparecerían mezclados.</p>
+
+<!-- ───────── 5.4 extractor_pdf.py ───────── -->
+<h3>5.4. <code>modules/extractor_pdf.py</code> — Extracción de PDF</h3>
+
+<p>Cuando el archivo de entrada es un PDF nativo (no una imagen escaneada), evita por completo el OCR y usa pdfplumber para extraer el texto embebido. Esto es órdenes de magnitud más rápido y exacto que aplicar OCR sobre el PDF rasterizado.</p>
+
+<p><strong>Función <code>extract_invoice_pdf(pdf_file_path)</code>:</strong></p>
+<ol>
+  <li>Abre el PDF con <code>pdfplumber.open()</code>.</li>
+  <li>Itera sobre cada página y concatena: el texto extraído con <code>page.extract_text()</code> y, adicionalmente, las celdas no nulas de la tabla detectada con <code>page.extract_table()</code>, unidas en una línea por fila.</li>
+  <li>Devuelve un único string con el resultado.</li>
+</ol>
+
+<div class="nota">
+  <strong>Nota técnica:</strong> En el código actual se observa una rama <code>else</code> tras el <code>for row in table</code> que vuelve a extraer texto de la página y lo concatena. Esto produce texto duplicado cuando la página tiene tabla. En una próxima iteración convendría eliminar esa rama o controlarla con una bandera.
+</div>
+
+<!-- ───────── 5.5 corrector.py ───────── -->
+<h3>5.5. <code>modules/corrector.py</code> — Corrector textual</h3>
+
+<p>Limpia el texto OCR y corrige confusiones típicas en contextos numéricos.</p>
+
+<p><strong>Mapa de sustituciones (<code>_OCR_NUM_MAP</code>):</strong></p>
+
+<table>
+  <thead><tr><th>OCR confunde</th><th>Real</th><th>OCR confunde</th><th>Real</th></tr></thead>
+  <tbody>
+    <tr><td>O, o, D</td><td>0</td><td>S</td><td>5</td></tr>
+    <tr><td>I, l, i</td><td>1</td><td>B</td><td>8</td></tr>
+    <tr><td>Z</td><td>2</td><td>G</td><td>6</td></tr>
+    <tr><td>T</td><td>7</td><td></td><td></td></tr>
+  </tbody>
+</table>
+
+<p><strong>Procesamiento de <code>correct_text(text)</code>:</strong></p>
+<ol>
+  <li>Divide el texto en líneas.</li>
+  <li>Por cada línea, elimina caracteres de control (<code>\x00–\x08</code>, <code>\x0B–\x1F</code>, <code>\x7F</code>).</li>
+  <li>Normaliza secuencias de espacios múltiples a un único espacio.</li>
+  <li>Detecta patrones que parecen montos monetarios y aplica el mapa de sustitución solo dentro de esos patrones, evitando alterar texto que no sea numérico.</li>
+  <li>Reune y devuelve el texto.</li>
+</ol>
+
+<p>La elección de aplicar las sustituciones <em>solo</em> en contextos numéricos es importante: una <em>O</em> en «Oxxo» no debe convertirse en cero; pero la misma letra dentro de «$1OO.OO» sí.</p>
+
+<!-- ───────── 5.6 parser.py ───────── -->
+<h3>5.6. <code>modules/parser.py</code> — Analizador léxico de facturas</h3>
+
+<p>Transforma el texto corregido en un diccionario con los campos relevantes. Es, conceptualmente, el <em>analizador léxico</em> del traductor.</p>
+
+<h4>Función <code>_parse_money(value)</code></h4>
+<p>Convierte cadenas de dinero heterogéneas a <code>float</code>, manejando formato mexicano (1.234,56), formato inglés (1,234.56) y casos sin separador de miles. Su lógica analiza el conteo y el orden relativo de comas y puntos para decidir cuál es el separador decimal.</p>
+
+<h4>Función <code>parse_invoice(text)</code></h4>
+<p>Aplica un conjunto de expresiones regulares para extraer los siguientes campos:</p>
+
+<table>
+  <thead><tr><th>Campo</th><th>Patrón</th><th>Ejemplo capturado</th></tr></thead>
+  <tbody>
+    <tr><td><code>numero_factura</code></td><td>Factura/Folio/No./Comprobante seguido de un identificador alfanumérico.</td><td>«Factura: A-12345»</td></tr>
+    <tr><td><code>proveedor</code></td><td>Proveedor/Emisor/Empresa/De/Sucursal/Razón Social seguido del nombre.</td><td>«Proveedor: OXXO S.A.»</td></tr>
+    <tr><td><code>fecha</code></td><td>Fecha en formato dd/mm/aaaa o ISO con hora.</td><td>«30/04/2026», «2026-04-30T15:20:28»</td></tr>
+    <tr><td><code>rfc</code></td><td>3–4 letras + 6 dígitos + 3 alfanuméricos (RFC mexicano).</td><td>«RFC: ANA050518RL1»</td></tr>
+    <tr><td><code>total</code></td><td>Heurística línea-por-línea descartando subtotales, IVA, descuentos y propinas.</td><td>1531.34</td></tr>
+  </tbody>
+</table>
+
+<p><strong>Heurística para el total:</strong> es la parte más sutil del parser. Se recorren las líneas del texto y, para cada una:</p>
+<ol>
+  <li>Se descartan líneas que contengan «subtotal», «descuento», «iva», «propina» o «cargo» <em>a menos que</em> también contengan la palabra «Total» con bordes de palabra (caso <em>«IVA Total»</em>).</li>
+  <li>Si la línea contiene «Total» (no parte de otra palabra), se buscan todos los montos con un patrón de dinero robusto que admite separadores de miles y decimales en cualquiera de los dos formatos.</li>
+  <li>Se toma el último monto de la línea, asumiendo que el total numérico va a la derecha de la etiqueta.</li>
+  <li>Se conserva además la línea exacta usada en <code>_debug_total_line</code> para que la interfaz pueda exhibirla y facilitar la depuración manual.</li>
+</ol>
+
+<!-- ───────── 5.7 aggregator.py ───────── -->
+<h3>5.7. <code>modules/aggregator.py</code> — Agregador de totales</h3>
+
+<p>Módulo muy compacto que ofrece dos funciones públicas para sumar totales de manera segura.</p>
+
+<table>
+  <thead><tr><th>Función</th><th>Descripción</th></tr></thead>
+  <tbody>
+    <tr><td><code>_safe_total(invoice)</code></td><td>Devuelve el total como <em>float</em> si existe y es numérico; en caso contrario, 0.0.</td></tr>
+    <tr><td><code>sum_all(invoices)</code></td><td>Suma el total de todas las facturas pasadas.</td></tr>
+    <tr><td><code>sum_selection(invoices, index)</code></td><td>Suma solo las facturas cuyos índices estén en <em>index</em>.</td></tr>
+  </tbody>
+</table>
+
+<p>La separación de esta lógica facilita pruebas unitarias y aísla la suma del resto del flujo.</p>
+
+<!-- ───────── 5.8 storage.py ───────── -->
+<h3>5.8. <code>modules/storage.py</code> — Persistencia JSON</h3>
+
+<p>Implementa un CRUD por archivo: cada factura se guarda como un JSON independiente en <code>data/process/</code>. La ruta se calcula a partir de la ubicación de <code>storage.py</code>, lo que la hace independiente del directorio de ejecución.</p>
+
+<table>
+  <thead><tr><th>Función</th><th>Descripción</th></tr></thead>
+  <tbody>
+    <tr><td><code>_sorted_files()</code></td><td>Lista los archivos <code>*.json</code> del directorio en orden alfabético.</td></tr>
+    <tr><td><code>save_invoices(data, name_archivo)</code></td><td>Crea el directorio si hace falta y serializa el diccionario con <code>indent=4</code> y UTF-8 sin escapado.</td></tr>
+    <tr><td><code>load_invoices()</code></td><td>Carga todos los JSON en una lista de diccionarios.</td></tr>
+    <tr><td><code>get_invoice(idx)</code></td><td>Carga el JSON en la posición <em>idx</em>; devuelve <code>None</code> si está fuera de rango.</td></tr>
+    <tr><td><code>update_invoice(idx, new_data)</code></td><td>Lee, fusiona campos no vacíos y reescribe el JSON. Convierte el total a <em>float</em> si llega como cadena.</td></tr>
+    <tr><td><code>delete_invoice(idx)</code></td><td>Elimina el archivo JSON correspondiente.</td></tr>
+  </tbody>
+</table>
+
+<div class="nota">
+  <strong>Observación:</strong> en el cálculo de <code>_STORAGE_DIR</code> hay una pequeña duplicación (<code>data/process</code> aparece dos veces en la ruta). En la práctica esto puede generar la creación de una subcarpeta <code>data/process/data/process</code>; en la próxima iteración convendría revisar y simplificar la composición de la ruta.
+</div>
+
+<!-- ════════════════════════════════ 6. CASO DE EJEMPLO ════════════════════════════════ -->
+<h2 class="pagebreak">6. Caso de ejemplo</h2>
+
+<p>El proyecto incluye una imagen de prueba (<code>assets/factura_gema.png</code>) y un resultado procesado (<code>data/process/EmilyLeonVuelo.json</code>). El JSON de salida ilustra la estructura final de un documento procesado:</p>
+
+<pre>
+{
+    "numero_factura": "152528792",
+    "proveedor": "LEYPERSONASMORALES",
+    "fecha": "2026-01-30T14:14:20",
+    "rfc": "ANA050518RL1",
+    "total": 1531.34,
+    "_debug_total_line": "Total $1,531.34"
+}
+</pre>
+
+<p>Cada campo proviene de una etapa identificable del traductor:</p>
+<ul>
+  <li><code>numero_factura</code>: capturado por la primera regex del parser.</li>
+  <li><code>proveedor</code>: extraído del campo «Razón Social». La cadena <em>LEYPERSONASMORALES</em> sugiere que el OCR fusionó tokens; un postprocesado adicional podría restaurar espacios.</li>
+  <li><code>fecha</code>: en formato ISO, característico de los CFDI mexicanos.</li>
+  <li><code>rfc</code>: validado contra el patrón <code>[A-Z&amp;Ñ]{3,4}\d{6}[A-Z0-9]{3}</code>.</li>
+  <li><code>total</code>: detectado por la heurística de línea, conservando la línea origen en <code>_debug_total_line</code>.</li>
+</ul>
+
+<!-- ════════════════════════════════ 7. CONCLUSIONES ════════════════════════════════ -->
+<h2>7. Conclusiones</h2>
+
+<p>El proyecto Traductor-OCR demuestra que un problema de extracción documental puede modelarse con la misma metodología de un traductor clásico: un análisis léxico (regex), una etapa de saneamiento (corrector OCR) y una representación estructurada de salida (JSON). La separación clara en módulos —preprocesamiento, OCR, corrección, parsing, agregación y persistencia— permite probar y mejorar cada etapa de forma independiente.</p>
+
+<p>Como áreas de mejora, se identifican: (1) corregir la duplicación de ruta en <code>storage.py</code>; (2) limpiar la rama <code>else</code> redundante en <code>extractor_pdf.py</code>; (3) generar un <code>requirements.txt</code> formal; (4) añadir pruebas unitarias para <code>parser._parse_money</code> y para la heurística del total; y (5) considerar el reemplazo de las regex por una gramática más estricta para campos especialmente sensibles como RFC y total, lo cual acercaría aún más el sistema al modelo formal de un traductor con un analizador sintáctico explícito.</p>
+
+<!-- ════════════════════════════════ 8. REFERENCIAS ════════════════════════════════ -->
+<h2>8. Referencias</h2>
+
+<ul>
+  <li>Streamlit. Documentación oficial. <em>https://docs.streamlit.io</em></li>
+  <li>EasyOCR. JaidedAI. <em>https://github.com/JaidedAI/EasyOCR</em></li>
+  <li>OpenCV. <em>https://docs.opencv.org/</em></li>
+  <li>pdfplumber. <em>https://github.com/jsvine/pdfplumber</em></li>
+  <li>Aho, A. V., Lam, M. S., Sethi, R. y Ullman, J. D. <em>Compilers: Principles, Techniques, and Tools.</em> Pearson, 2.ª ed., 2006.</li>
+</ul>
+
+</body>
+</html>
